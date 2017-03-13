@@ -1,0 +1,131 @@
+package impl;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
+public class TrieMapAutocomplete {
+	
+
+	private TrieNode root;
+	
+	/*Node inner class*/
+	private class TrieNode {
+		private char value;
+		private boolean isEndOfWordNode;
+		private HashMap<Character, TrieNode> childNodes = new HashMap<Character, TrieNode>();
+		
+		
+		public char getValue(){
+			return value;
+		}
+		
+		public TrieNode(){}
+	
+		public TrieNode(char arg){
+			value = arg;
+		}
+		
+		public HashMap<Character, TrieNode> getChildren(){
+			return childNodes;
+		}
+		
+		public boolean isEndOfWordNode(){
+			return isEndOfWordNode;
+		}
+		
+		public void setEndOfWordNode(){
+			isEndOfWordNode = true;
+		}
+	}
+	
+	
+	
+	public TrieMapAutocomplete(){
+		root = new TrieNode();
+	}
+	
+	
+	public void insert(String word){
+		
+		HashMap<Character, TrieNode> childNodes = root.childNodes;
+		
+        for(int i=0; i < word.length(); i++){
+            char aLetter = word.charAt(i);
+ 
+            TrieNode temp;
+            if(childNodes.containsKey(aLetter)){
+                    temp = childNodes.get(aLetter);
+            } else {
+                temp = new TrieNode(aLetter);
+                childNodes.put(aLetter, temp);
+            }
+ 
+            childNodes = temp.childNodes;
+ 
+            /*set the node to EndOfWordNode*/
+            if(i==word.length()-1)
+                temp.setEndOfWordNode();    
+        }
+	}
+	
+	public String getWordAutocomplete(String word){
+		HashMap<Character, TrieNode> childNodes = root.childNodes;
+		String wordToReturn = "";
+		
+		for(int i = 0; i< word.length(); ++i) {
+			char aLetter = word.charAt(i);
+			
+			wordToReturn += aLetter;
+			
+			TrieNode temp;
+			temp = childNodes.get(aLetter);	
+			/*HashMap returns null if key isn't present in Map*/
+			if(temp == null){
+				return "";
+			}
+
+			/*if at end of word - and it's end of word node (that part is redundant I guess*/
+			if(i == word.length()-1 && temp.isEndOfWordNode()){
+				return wordToReturn;
+			}
+			
+			/*if we're at end of word to search for - and there's only one child node - for auto-complete*/
+			if(i == word.length()-1){
+				/*if the number of children is only 1 - we can try and fetch the full word*/
+				if(temp.childNodes.size()==1){
+					/*While there's only 1 child*/
+					while(temp.childNodes.size() <= 1){
+						/*Collection -> ArrayList nonsense*/
+						List<TrieNode> theList = new ArrayList<TrieNode>(temp.childNodes.values());
+						temp = theList.get(0);
+						wordToReturn += temp.getValue();
+						
+						if(temp.childNodes.size() > 1){
+							return "";
+						} else if (temp.isEndOfWordNode()){
+							return wordToReturn;
+						}
+						
+					}
+					
+				} 
+			}
+			
+			childNodes = temp.childNodes;
+		}
+		
+		return "";
+	}
+	
+	public static void main(String[] args){
+		TrieMapAutocomplete temp = new TrieMapAutocomplete();
+		temp.insert("abcd");
+		temp.insert("abcdef");
+		temp.insert("abcdfg");
+		
+		System.out.println(temp.getWordAutocomplete("abcdf"));
+	}
+	
+}
