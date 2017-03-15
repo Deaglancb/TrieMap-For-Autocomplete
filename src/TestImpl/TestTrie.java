@@ -15,6 +15,8 @@ public class TestTrie {
 		testMap.insert("abcdyx");
 		System.out.println("Insert 'test'");
 		testMap.insert("test");
+		System.out.println("Insert 'Tasting'");
+		testMap.insert("Tasting");
 		
 		System.out.println("");
 		System.out.println("getWordAutocomplete 'abc'    " + ": " + testMap.getWordAutocomplete("abc"));
@@ -26,7 +28,8 @@ public class TestTrie {
 		System.out.println("");
 		System.out.println("getWordAutocomplete 't'      " + ": " + testMap.getWordAutocomplete("t"));
 		System.out.println("getWordAutocomplete 'T'      " + ": " + testMap.getWordAutocomplete("T"));
-		System.out.println("getWordAutocomplete 'TEs'    " + ": " + testMap.getWordAutocomplete("TEs"));
+		System.out.println("getWordAutocomplete 'TE'     " + ": " + testMap.getWordAutocomplete("TEs"));
+		System.out.println("getWordAutocomplete 'ta'     " + ": " + testMap.getWordAutocomplete("ta"));
 
 	}
 }
