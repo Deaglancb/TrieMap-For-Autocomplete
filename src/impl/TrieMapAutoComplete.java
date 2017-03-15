@@ -32,10 +32,6 @@ public class TrieMapAutoComplete {
 			value = arg;
 		}
 		
-		public HashMap<Character, TrieNode> getChildren(){
-			return childNodes;
-		}
-		
 		public boolean isEndOfPhraseNode(){
 			return isEndOfPhraseNode;
 		}
