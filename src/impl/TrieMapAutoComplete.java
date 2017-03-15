@@ -1,6 +1,7 @@
 /*
+ Trie map used for small scale string completion for non ambiguous strings - more considerations have to be taken for multi worded phrases & for oddly capitalised phrases
+ - consider including array[length of string] of boolean values in the endOfPhrase node - indicating whether individual chars are uppercase or not 
  Trie Map originally sourced/inspired http://www.programcreek.com/2014/05/leetcode-implement-trie-prefix-tree-java/
- falters in cases in which words start with the same letter but are/are not capitalised - will upload fix sometime
 */
 
 package impl;
@@ -73,10 +74,10 @@ public class TrieMapAutoComplete {
  
             childNodes = temp.childNodes;
  
-            /*set the node to EndOfWordNode*/
+            /*set the node to EndOfPhraseNode*/
             if(i==word.length()-1) {
                 temp.setEndOfPhraseNode();   
-                /*if the first letter is capital*/
+                /*if the first letter should be capital*/
                 if(word.charAt(0) == Character.toUpperCase(word.charAt(0))) {
                 	temp.setCapitalisedWord();
                 }
@@ -115,13 +116,14 @@ public class TrieMapAutoComplete {
 			if(i == word.length()-1) {
 				/*if the number of children is only 1 - we can try and fetch the full word*/
 				if(temp.childNodes.size()==1) {
-					/*While there's only 1 child*/
+					/*While there's only 1 child - continually traverse down tree*/
 					while(temp.childNodes.size() <= 1) {
-						/*Collection -> ArrayList nonsense*/
 						List<TrieNode> theList = new ArrayList<TrieNode>(temp.childNodes.values());
+						/*only one child - get the single element in the array */
 						temp = theList.get(0);
 						wordToReturn += temp.getValue();
 						
+						/*ambiguous word - multiple options exist*/
 						if(temp.childNodes.size() > 1) {
 							return null;
 						} else if (temp.isEndOfPhraseNode()) {
@@ -135,6 +137,8 @@ public class TrieMapAutoComplete {
 			}
 			childNodes = temp.childNodes;
 		}
+		
+		/*if we're at this point -> no full word found => return null*/
 		return null;
 	}
 }
